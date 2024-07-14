@@ -11,22 +11,28 @@
   <p id="diState">DI State: Unknown</p>
 
   <script>
-    var websocket = new WebSocket('ws://' + location.hostname + ':81/');
+    var websocket;
 
-    websocket.onopen = function() {
-      console.log('WebSocket connected');
-    };
+    function initWebSocket() {
+      var ipAddress = prompt("Please enter the IP address of your ESP32:", "192.168.0.1");
+      if (ipAddress) {
+        websocket = new WebSocket('ws://' + ipAddress + ':81/');
+        websocket.onopen = function() {
+          console.log('WebSocket connected');
+        };
 
-    websocket.onclose = function() {
-      console.log('WebSocket disconnected');
-    };
+        websocket.onclose = function() {
+          console.log('WebSocket disconnected');
+        };
 
-    websocket.onmessage = function(event) {
-      var message = JSON.parse(event.data);
-      if (message.action === 'diState') {
-        document.getElementById('diState').innerText = 'DI State: ' + message.state;
+        websocket.onmessage = function(event) {
+          var message = JSON.parse(event.data);
+          if (message.action === 'diState') {
+            document.getElementById('diState').innerText = 'DI State: ' + message.state;
+          }
+        };
       }
-    };
+    }
 
     function setDO(state) {
       var message = JSON.stringify({
@@ -42,6 +48,8 @@
       });
       websocket.send(message);
     }
+
+    window.onload = initWebSocket;
   </script>
 </body>
 </html>
