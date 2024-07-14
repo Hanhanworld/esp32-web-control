@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>ESP32 WebSocket Control</title>
+</head>
+<body>
+  <h1>ESP32 WebSocket Control</h1>
+  <button onclick="setDO(1)">Turn ON DO</button>
+  <button onclick="setDO(0)">Turn OFF DO</button>
+  <button onclick="getDI()">Get DI State</button>
+  <p id="diState">DI State: Unknown</p>
+
+  <script>
+    var websocket = new WebSocket('ws://' + location.hostname + ':81/');
+
+    websocket.onopen = function() {
+      console.log('WebSocket connected');
+    };
+
+    websocket.onclose = function() {
+      console.log('WebSocket disconnected');
+    };
+
+    websocket.onmessage = function(event) {
+      var message = JSON.parse(event.data);
+      if (message.action === 'diState') {
+        document.getElementById('diState').innerText = 'DI State: ' + message.state;
+      }
+    };
+
+    function setDO(state) {
+      var message = JSON.stringify({
+        action: 'setDO',
+        state: state
+      });
+      websocket.send(message);
+    }
+
+    function getDI() {
+      var message = JSON.stringify({
+        action: 'getDI'
+      });
+      websocket.send(message);
+    }
+  </script>
+</body>
+</html>
