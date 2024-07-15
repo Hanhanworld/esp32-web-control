@@ -9,7 +9,7 @@
     <button onclick="sendRequest()">Send Command</button>
     <script>
         function sendRequest() {
-            fetch('http://你的ESP32的IP地址/do')
+            fetch('http://192.168.142.41/do')
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
