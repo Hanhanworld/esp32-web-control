@@ -9,7 +9,7 @@
     <button onclick="sendRequest()">Send Command</button>
     <script>
         function sendRequest() {
-            fetch('http://192.168.142.41/do')
+            fetch('http://192.168.142.41/do') // 替換為你的 ESP32 的 IP 地址
                 .then(response => response.text())
                 .then(data => {
                     console.log(data);
