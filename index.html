@@ -1,55 +1,22 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>ESP32 WebSocket Control</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ESP32 Control</title>
 </head>
 <body>
-  <h1>ESP32 WebSocket Control</h1>
-  <button onclick="setDO(1)">Turn ON DO</button>
-  <button onclick="setDO(0)">Turn OFF DO</button>
-  <button onclick="getDI()">Get DI State</button>
-  <p id="diState">DI State: Unknown</p>
-
-  <script>
-    var websocket;
-
-    function initWebSocket() {
-      var ipAddress = prompt("Please enter the IP address of your ESP32:", "192.168.0.1");
-      if (ipAddress) {
-        websocket = new WebSocket('ws://' + ipAddress + ':81/');
-        websocket.onopen = function() {
-          console.log('WebSocket connected');
-        };
-
-        websocket.onclose = function() {
-          console.log('WebSocket disconnected');
-        };
-
-        websocket.onmessage = function(event) {
-          var message = JSON.parse(event.data);
-          if (message.action === 'diState') {
-            document.getElementById('diState').innerText = 'DI State: ' + message.state;
-          }
-        };
-      }
-    }
-
-    function setDO(state) {
-      var message = JSON.stringify({
-        action: 'setDO',
-        state: state
-      });
-      websocket.send(message);
-    }
-
-    function getDI() {
-      var message = JSON.stringify({
-        action: 'getDI'
-      });
-      websocket.send(message);
-    }
-
-    window.onload = initWebSocket;
-  </script>
+    <button onclick="sendRequest()">Send Command</button>
+    <script>
+        function sendRequest() {
+            fetch('http://你的ESP32的IP地址/do')
+                .then(response => response.text())
+                .then(data => {
+                    console.log(data);
+                    // 在這裡可以更新頁面顯示結果
+                })
+                .catch(error => console.error('Error:', error));
+        }
+    </script>
 </body>
 </html>
